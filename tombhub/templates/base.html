@@ -15,7 +15,14 @@
         <div class="navbar-form navbar-left" role="search">
         </div>
         <div class="navbar-right">
+            {% if g.user.is_authenticated() %}
+            <label>{{g.user.name}}</label>
+            <button type="button" class="btn btn-default navbar-btn" onclick="location.href = '/logout';">注销</button>
+            {% endif %}
+            {% if not g.user.is_authenticated() %}
             <button type="button" class="btn btn-default navbar-btn" onclick="location.href = '/login';">登录</button>
+            <button type="button" class="btn btn-default navbar-btn" onclick="location.href = '/register';">注册</button>
+            {% endif %}
         </div>
     </div>
 </div>

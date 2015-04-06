@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tombhub import tombhub
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify,g
 from tombhub import login_manager
 from tombhub.models import User
 from tombhub.database import db_session
@@ -11,9 +11,13 @@ from flask_login import login_user, logout_user, current_user, login_required
 def load_user(id):
     return User.query.get(int(id))
 
+@tombhub.before_request
+def before_request():
+    g.user = current_user
+
 @tombhub.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html",g=g)
 
 @tombhub.route('/login', methods=['GET', 'POST'])
 def login():
@@ -38,3 +42,8 @@ def register():
         db_session.add(user)
         db_session.commit()
     return render_template('register.html')
+
+@tombhub.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
