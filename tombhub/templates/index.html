@@ -1,4 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-        <h1 id="Hello" class="page-header">Hello World</h1>
+<div class="container">
+    &nbsp;
+    <div class="row">
+        <div class="panel panel-default col-md-5 col-md-offset-2">
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+        <div class="panel panel-default col-md-3 col-md-offset-1">
+            {% if g.user.is_authenticated() %}
+            <div class="panel-heading">{{g.user.name}}</div>
+            <div class="panel-body">
+                TODO
+            </div>
+            {% endif %}
+            {% if not g.user.is_authenticated() %}
+            <div class="panel-heading">TombHub 是一个纪念所有写出来没人用的程序的地方</div>
+            <div class="panel-body">
+                <a href="/login" class="navbar-link" >登录</a>
+                <a href="/register" class="navbar-link" >注册</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

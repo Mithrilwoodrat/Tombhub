@@ -49,6 +49,10 @@ def logout():
     return redirect(url_for('index'))
 
 @tombhub.route('/user/<username>')
-@login_required
 def user(username):
     return render_template('user.html',username=username)
+
+@tombhub.route('/setting')
+@login_required
+def setting():
+    pass
