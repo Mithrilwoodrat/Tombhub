@@ -47,3 +47,8 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@tombhub.route('/user/<username>')
+@login_required
+def user(username):
+    return render_template('user.html',username=username)
