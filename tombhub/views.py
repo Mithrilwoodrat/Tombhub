@@ -56,3 +56,8 @@ def user(username):
 @login_required
 def setting():
     pass
+
+@tombhub.route('/new_thread', methods=['GET', 'POST'])
+@login_required
+def new_thread():
+    return  render_template('new_thread.html')

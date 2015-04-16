@@ -25,3 +25,14 @@ class User(Base):
 
     def get_id(self):
         return self.id
+
+
+class Thread(Base):
+    __tablename__ = 'threads'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(50), unique=True)
+    content = Column()
+
+    def __init__(self, title=None, content = None):
+        self.title = title
+        self.content = content
