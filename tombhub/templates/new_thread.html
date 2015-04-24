@@ -8,17 +8,17 @@
         &nbsp;
     <div class="row">
         <div class="panel panel-default col-md-6 col-md-offset-2">
-            <form>
+            <form method="post" action="/new_thread">
                 <div class="form-group">
                     <label>标题</label>
-                    <input type="text" class="form-control" id="ThreadTitle">
+                    <input type="text" class="form-control col-md-4" id="ThreadTitle" name="title">
                 </div>
                 <div class="form-group">
                     <label>内容</label>
                     <script id="container" type="text/plain"></script>
                 </div>
                 <div class="form-group">
-                    <input type="button" class="btn btn-default col-md-offset-10" id="publish" value="发布">
+                    <input type="submit" class="btn btn-default col-md-offset-10" id="publish" value="发布">
                 </div>
             </form>
         </div>
@@ -41,4 +41,7 @@
         });
     });
 </script>
+<!--<script type="text/javascript">
+    function publishThread(){}
+</script>-->
 {% endblock %}

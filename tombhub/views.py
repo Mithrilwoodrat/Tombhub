@@ -60,4 +60,9 @@ def setting():
 @tombhub.route('/new_thread', methods=['GET', 'POST'])
 @login_required
 def new_thread():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        context = request.form.get('editorValue')
+        print title,context
+
     return  render_template('new_thread.html')

@@ -15,13 +15,13 @@
         </div>
         <div class="panel panel-default col-md-3 col-md-offset-1">
             {% if g.user.is_authenticated() %}
-            <div class="panel-heading">{{g.user.name}}</div>
+            <div class="panel-heading color-white">{{g.user.name}}</div>
             <div class="panel-body">
                 TODO
             </div>
             {% endif %}
             {% if not g.user.is_authenticated() %}
-            <div class="panel-heading">TombHub 是一个纪念所有写出来没人用的程序的地方</div>
+            <div class="panel-heading color-white">TombHub 是一个纪念所有写出来没人用的程序的地方</div>
             <div class="panel-body">
                 <p>还没有帐号?<a href="/register" class="navbar-link" >注册</a></p>
                 <p>已有帐号?<a href="/login" class="navbar-link" >登录</a></p>
