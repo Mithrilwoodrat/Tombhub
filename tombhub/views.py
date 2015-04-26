@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from tombhub import tombhub
-from flask import render_template, request, redirect, url_for, jsonify,g
+from flask import render_template, request, redirect, url_for, jsonify,g, Markup
 from tombhub import login_manager
-from tombhub.models import User
+from tombhub.models import User, Thread
 from tombhub.database import db_session
 from flask_login import login_user, logout_user, current_user, login_required
 
@@ -17,7 +17,8 @@ def before_request():
 
 @tombhub.route('/')
 def index():
-    return render_template("index.html",g=g)
+    threads = Thread.query.limit(5).all()
+    return render_template("index.html",g=g,threads=threads)
 
 @tombhub.route('/login', methods=['GET', 'POST'])
 def login():
@@ -41,6 +42,7 @@ def register():
         user = User(username, passwd)
         db_session.add(user)
         db_session.commit()
+        return  redirect(url_for('index'))
     return render_template('register.html')
 
 @tombhub.route('/logout')
@@ -62,7 +64,12 @@ def setting():
 def new_thread():
     if request.method == 'POST':
         title = request.form.get('title')
-        context = request.form.get('editorValue')
-        print title,context
-
+        title = Markup(title)
+        author = g.user.get_id()
+        content = request.form.get('editorValue')
+        content = Markup(content)
+        thread = Thread(title, author, content)
+        db_session.add(thread)
+        db_session.commit()
+        return  redirect(url_for('index'))
     return  render_template('new_thread.html')

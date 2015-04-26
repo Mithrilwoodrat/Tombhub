@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+import datetime
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKeyConstraint
 from tombhub.database import Base
 
 class User(Base):
@@ -30,9 +31,18 @@ class User(Base):
 class Thread(Base):
     __tablename__ = 'threads'
     id = Column(Integer, primary_key=True)
-    title = Column(String(50), unique=True)
-    content = Column()
+    author_id = Column(Integer, nullable=False)
+    author_name = Column(String(50), nullable=False)
+    title = Column(String(50))
+    content = Column(Text)
+    created_date = Column(DateTime, default=datetime.datetime.utcnow)
+    ForeignKeyConstraint(['author_id','author_name'],['users.id','users.name'])
 
-    def __init__(self, title=None, content = None):
+    def __init__(self, title=None, author_id=None, content = None):
         self.title = title
+        self.author_id = author_id
+        self.author_name = User.query.get(self.author_id).name
         self.content = content
+
+    def __repr__(self):
+        return '<Thread %r>' % (self.title)

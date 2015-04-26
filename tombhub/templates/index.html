@@ -5,18 +5,31 @@
     <div class="row">
         <div class="panel panel-default col-md-6 col-md-offset-2">
             <div class="panel-head">
-                {% if g.user.is_authenticated() %}
-                <a href="/new_thread">发表新的议题</a>
-                {% endif %}
             </div>
             <div class="panel-body">
-                Panel content
+                <div class="list-group">
+                {% for thread in threads %}
+                    <div  class="list-group-item" id="{{thread.id}}">
+                        <h2 class="list-group-item-heading" >{{thread.title | safe}}</h2>
+                        <p class="list-group-item-text">
+                            {{thread.content | safe}}
+                        </p>
+                        <p>
+                        <a href="/user/{{thread.author_name}}" > {{thread.author_name}}</a>
+                            {{thread.created_date.strftime('%Y-%m-%d')}}
+                        </p>
+                    </div>
+                    <div class="spacer"></div>
+                {% endfor %}
+                </div>
             </div>
         </div>
         <div class="panel panel-default col-md-3 col-md-offset-1">
             {% if g.user.is_authenticated() %}
             <div class="panel-heading color-white">{{g.user.name}}</div>
             <div class="panel-body">
+                <a href="/new_thread">发表新的议题</a>
+                <br>
                 TODO
             </div>
             {% endif %}

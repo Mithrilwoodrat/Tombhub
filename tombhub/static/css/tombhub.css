@@ -13,3 +13,8 @@ body
 {
     background-color : #fff !important;
 }
+
+.spacer
+{
+    height: 5px;
+}
