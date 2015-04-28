@@ -4,7 +4,7 @@ import sqlite3
 con = sqlite3.connect("tempdb.sqlite")
 c = con.cursor()
 def drop_table(table):
-    c.execute("drop table %s" %(table))
+    c.execute("drop table if exists %s;" % (table))
     con.commit()
     con.close()
 
