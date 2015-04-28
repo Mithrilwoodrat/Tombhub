@@ -9,7 +9,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return db_session.query(User).get(int(id))
 
 @tombhub.before_request
 def before_request():
@@ -17,7 +17,7 @@ def before_request():
 
 @tombhub.route('/')
 def index():
-    threads = Thread.query.limit(5).all()
+    threads = db_session.query(Thread).order_by(Thread.created_date.desc()).limit(20).all()
     return render_template("index.html",g=g,threads=threads)
 
 @tombhub.route('/login', methods=['GET', 'POST'])
@@ -27,7 +27,7 @@ def login():
     username = request.form.get('username')
     passwd = request.form.get('passwd')
     print username,passwd
-    registered_user = User.query.filter(User.name == username, User.passwd == passwd).first()
+    registered_user = db_session.query(User).filter(User.name == username, User.passwd == passwd).first()
     if registered_user is None:
         return jsonify(status="Not Found")#redirect(url_for('login'))
     login_user(registered_user)
@@ -52,7 +52,9 @@ def logout():
 
 @tombhub.route('/user/<username>')
 def user(username):
-    return render_template('user.html',username=username)
+    user_threads = db_session.query(Thread).order_by(Thread.created_date.desc()).filter(
+        Thread.author_name == username).limit(5).all()
+    return render_template('user.html', username=username, threads=user_threads)
 
 @tombhub.route('/setting')
 @login_required
