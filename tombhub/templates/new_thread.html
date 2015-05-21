@@ -41,7 +41,30 @@
         });
     });
 </script>
-<!--<script type="text/javascript">
-    function publishThread(){}
-</script>-->
+    <script type="text/javascript">
+    function submit_thread(){
+        var title = $('#ThreadTitle').val();
+        var content = um.getContent(); //$('#umeditor_textarea_editorValue').val();
+        console.log(title+content);
+        if (!(title&&content)){
+            alert("标题的内容不能为空");
+            return false;
+        }
+        $.post(
+                '/new_thread',
+                {
+                    title : title,
+                    content : content
+                },
+                function(data) {
+                    console.log(data);
+                    if (data.status == 'FAILED'){
+                        alert('提交失败');
+                    }
+                    else{
+                        location.href = '/';
+                    }
+                });
+    }
+    </script>
 {% endblock %}

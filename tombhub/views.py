@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tombhub import tombhub
-from flask import render_template, request, redirect, url_for, jsonify,g, Markup
+from flask import render_template, request, redirect, url_for, jsonify,g, Markup, abort
 from tombhub import login_manager
 from tombhub.models import User, Thread
 from tombhub.database import db_session
@@ -22,27 +22,28 @@ def index():
 
 @tombhub.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    username = request.form.get('username')
-    passwd = request.form.get('passwd')
-    print username,passwd
-    registered_user = db_session.query(User).filter(User.name == username, User.passwd == passwd).first()
-    if registered_user is None:
-        return jsonify(status="Not Found")#redirect(url_for('login'))
-    login_user(registered_user)
-    return jsonify(status="login success") #redirect(url_for('index'))
-
+    if request.method == 'POST':
+        username = request.form.get('username')
+        passwd = request.form.get('passwd')
+        registered_user = db_session.query(User).filter(User.name == username, User.passwd == passwd).first()
+        if registered_user is None:
+            return jsonify(status="FAILED",error="user not found")
+        login_user(registered_user)
+        return jsonify(status="SUCCESS")
+    return render_template('login.html')
 
 @tombhub.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
         passwd = request.form.get('passwd')
-        user = User(username, passwd)
-        db_session.add(user)
-        db_session.commit()
-        return  redirect(url_for('index'))
+        if db_session.query(User).filter(User.name == username).first():
+            return jsonify(status='FAILED',error='user existed')
+        else:
+            user = User(username, passwd)
+            db_session.add(user)
+            db_session.commit()
+            return  jsonify(status='SUCCESS')
     return render_template('register.html')
 
 @tombhub.route('/logout')
@@ -70,8 +71,29 @@ def new_thread():
         author = g.user.get_id()
         content = request.form.get('editorValue')
         content = Markup(content)
-        thread = Thread(title, author, content)
-        db_session.add(thread)
-        db_session.commit()
-        return  redirect(url_for('index'))
+        if title and content:
+            thread = Thread(title, author, content)
+            db_session.add(thread)
+            db_session.commit()
+            return jsonify(status="SUCCESS")
+        else:
+            return jsonify(status="FAILED")
     return  render_template('new_thread.html')
+
+@tombhub.route('/thread/<id>/')
+@tombhub.route('/thread/<id>/<action>')
+def thread(id, action=None):
+    if not action:
+        thread = db_session.query(Thread).filter(Thread.id == id).first()
+        if thread:
+            return render_template('thread.html',thread=thread)
+        else:
+            abort(404)
+            return redirect('/')
+    elif action == "delete":
+        thread = db_session.query(Thread).filter(Thread.id == id).first()
+        if thread and g.user.get_id() == thread.author_id:
+            db_session.query(Thread).filter(Thread.id == id).delete()
+            return jsonify(status='SUCCESS')
+        else:
+            return jsonify(status='FAILED',error='operation illegal')

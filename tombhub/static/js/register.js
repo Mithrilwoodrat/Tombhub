@@ -1,23 +1,28 @@
-function login(){
+function register(){
     username = $('#username').val();
     passwd = $('#passwd').val();
+    rpt_passwd = $('#rpt_passwd').val();
     if (!(username&&passwd)){
         alert("请输入帐号密码");
         return false;
     }
+    else if (passwd != rpt_passwd)
+    {
+        alert("输入密码不一致");
+        return false;
+    }
     $.post(
-            '/login',
+            '/register',
             {
                 username : username,
-                passwd : passwd
-            },
+                passwd : passwd},
             function(data) {
                 if (data.status == 'SUCCESS'){
-                    location.href = '/';
+                    location.href = '/login';
                 }
                 else{
-                    alert("登录失败"+data.error);
-                    location.href = '/login';
+                    alert("注册失败"+data.error);
+                    location.href = '/register';
                 }
             });
 }

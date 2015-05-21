@@ -6,21 +6,32 @@
             <div class="panel-head">
             </div>
             <div class="panel-body">
-                <div class="list-group">
-                {% for thread in threads %}
-                    <div  class="list-group-item" id="{{thread.id}}">
-                        <h2 class="list-group-item-heading" >{{thread.title | safe}}</h2>
-                        <p class="list-group-item-text">
-                            {{thread.content | safe}}
-                        </p>
-                        <p>
-                        <a href="/user/{{thread.author_name}}" > {{thread.author_name}}</a>
+                <table class="table table-hover">
+                    <span>
+                        <h2>最新提交</h2>
+                    </span>
+                    <hr>
+                    <tbody>
+                    <tr>
+                        <td>时间</td>
+                        <td>标题</td>
+                        <td>作者</td>
+                    </tr>
+                    {% for thread in threads %}
+                    <tr id="{{thread.id}}">
+                        <td>
                             {{thread.created_date.strftime('%Y-%m-%d')}}
-                        </p>
-                    </div>
-                    <div class="spacer"></div>
-                {% endfor %}
-                </div>
+                        </td>
+                        <td>
+                            <a href="/thread/{{thread.id}}/">{{thread.title | safe}}</a>
+                        </td>
+                        <td>
+                            <a href="/user/{{thread.author_name}}" > {{thread.author_name}}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="panel panel-default col-md-3 col-md-offset-1">
