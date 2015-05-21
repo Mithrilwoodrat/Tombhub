@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default col-md-8 col-md-offset-2">
+            <div class="panel-heading color-white">
+                <h2>{{thread.title | safe}}</h2>
+                <p style="display: none" id="thread_id">{{thread.id}}</p>
+                <hr>
+                <div>
+                    <span>
+                        <h3>基本信息</h3>
+                    </span>
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <td>作者</td>
+                            <td><a href="/user/{{thread.author_name}}"> {{thread.author_name}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>发布日期</td>
+                            <td>
+                                {{thread.created_date.strftime('%Y-%m-%d')}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="panel-body">
+                <span>
+                    <h3>标题</h3>
+                </span>
+                <hr>
+                <div id="context">
+                    {{thread.content | safe}}
+                </div>
+                <hr>
+
+            </div>
+
+            <hr>
+            <div id="btn-box">
+                {% if g.user.is_authenticated() and g.user.get_id() == thread.author_id %}
+                <button id="edit" class="btn btn-default col-md-offset-8">修改</button>
+                <button id="delete" class="btn btn-default" onclick="delete_thread()">删除</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function delete_thread() {
+        var thread_id = $('#thread_id').text();
+        url = '/thread/'+thread_id+'/delete';
+        $.get(
+                url,
+                null,
+                function(data){
+                    if (data.status=="SUCCESS"){
+                        console.log("SUCCESS");
+                        location.href = "/";
+                    }
+                    else{
+                        alert("删除失败"+data.error)
+                        console.log(data.error);
+                    }
+                }
+        );
+    }
+</script>
+{% endblock %}
