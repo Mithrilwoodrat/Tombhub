@@ -69,7 +69,7 @@ def new_thread():
         title = request.form.get('title')
         title = Markup(title)
         author = g.user.get_id()
-        content = request.form.get('editorValue')
+        content = request.form.get('content')
         content = Markup(content)
         if title and content:
             thread = Thread(title, author, content)
@@ -78,7 +78,7 @@ def new_thread():
             return jsonify(status="SUCCESS")
         else:
             return jsonify(status="FAILED")
-    return  render_template('new_thread.html')
+    return render_template('new_thread.html')
 
 @tombhub.route('/thread/<id>/')
 @tombhub.route('/thread/<id>/<action>')
@@ -94,6 +94,7 @@ def thread(id, action=None):
         thread = db_session.query(Thread).filter(Thread.id == id).first()
         if thread and g.user.get_id() == thread.author_id:
             db_session.query(Thread).filter(Thread.id == id).delete()
+            db_session.commit()
             return jsonify(status='SUCCESS')
         else:
             return jsonify(status='FAILED',error='operation illegal')

@@ -2,38 +2,20 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="panel panel-default col-md-6 col-md-offset-2">
-            <div class="panel-head">
+    <div class="col-md-6 col-md-offset-2">
+    {% for thread in threads %}
+        <div class="panel panel-default">
+            <div class="panel-heading color-white">
+                <a href="/thread/{{thread.id}}/"><h2>{{thread.title | safe}}</h2></a>
+                {{thread.created_date.strftime('%Y-%m-%d')}}
+                <a href="/user/{{thread.author_name}}" > {{thread.author_name}}</a>
             </div>
             <div class="panel-body">
-                <table class="table table-hover">
-                    <span>
-                        <h2>最新提交</h2>
-                    </span>
-                    <hr>
-                    <tbody>
-                    <tr>
-                        <td>时间</td>
-                        <td>标题</td>
-                        <td>作者</td>
-                    </tr>
-                    {% for thread in threads %}
-                    <tr id="{{thread.id}}">
-                        <td>
-                            {{thread.created_date.strftime('%Y-%m-%d')}}
-                        </td>
-                        <td>
-                            <a href="/thread/{{thread.id}}/">{{thread.title | safe}}</a>
-                        </td>
-                        <td>
-                            <a href="/user/{{thread.author_name}}" > {{thread.author_name}}</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                {{ thread.content | safe }}
             </div>
         </div>
+    {% endfor %}
+    </div>
         <div class="panel panel-default col-md-3 col-md-offset-1">
             {% if g.user.is_authenticated() %}
             <div class="panel-heading color-white">{{g.user.name}}</div>
